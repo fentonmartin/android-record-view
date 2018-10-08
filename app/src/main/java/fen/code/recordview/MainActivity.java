@@ -1,6 +1,7 @@
 package fen.code.recordview;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -75,10 +76,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_record) {
-            
+
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setActivity(Class activity) {
+        Intent intent = new Intent(getApplicationContext(), activity);
+        startActivity(intent);
     }
 
     private void setToast(String text) {
