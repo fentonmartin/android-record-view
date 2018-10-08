@@ -1,9 +1,11 @@
 package fen.code.recordview;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.devlomi.record_view.OnRecordListener;
 import com.devlomi.record_view.RecordButton;
@@ -15,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     RecordButton recordButton;
     RecordView recordView;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,26 +37,33 @@ public class MainActivity extends AppCompatActivity {
             public void onStart() {
                 // On Start Recording
                 Log.d("RecordView", "onStart");
+                textView.setText("RecordView: onStart\n\n");
             }
 
             @Override
             public void onCancel() {
                 // On Swipe To Cancel
                 Log.d("RecordView", "onCancel");
-
+                textView.setText(textView.getText().toString() + "RecordView: onCancel\n\n");
             }
 
             @Override
             public void onFinish(long recordTime) {
                 // On Stop Recording
                 Log.d("RecordView", "onFinish");
+                textView.setText(textView.getText().toString() + "RecordView: onFinish\n\n");
             }
 
             @Override
             public void onLessThanSecond() {
                 // When the record time is less than One Second
                 Log.d("RecordView", "onLessThanSecond");
+                textView.setText(textView.getText().toString() + "RecordView: onLessThanSecond\n\n");
             }
         });
+    }
+
+    private void setToast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 }
