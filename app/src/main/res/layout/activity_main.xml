@@ -5,6 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="Record some audio.."
+            android:textColor="#000"
+            android:textSize="12sp" />
+
+    </ScrollView>
+
     <com.devlomi.record_view.RecordView
         android:id="@+id/record_view"
         android:layout_width="match_parent"
