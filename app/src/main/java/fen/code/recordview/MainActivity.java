@@ -120,6 +120,9 @@ public class MainActivity extends AppCompatActivity {
     /* HERE: REQUEST PERMISSIONS */
 
     private void requestPermission() {
+        Log.d("requestPermission", "requestPermission");
+        textView.setText("requestPermission: requestPermission\n\n");
+        
         ActivityCompat.requestPermissions(MainActivity.this, new
                 String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
     }
@@ -127,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+        Log.d("requestPermission", "onRequestPermissionsResult");
+        textView.setText("requestPermission: onRequestPermissionsResult\n\n");
+
         switch (requestCode) {
             case RequestPermissionCode:
                 if (grantResults.length > 0) {
@@ -147,6 +153,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean checkPermission() {
+        Log.d("requestPermission", "checkPermission");
+        textView.setText("requestPermission: checkPermission\n\n");
+
         int result = ContextCompat.checkSelfPermission(getApplicationContext(),
                 WRITE_EXTERNAL_STORAGE);
         int result1 = ContextCompat.checkSelfPermission(getApplicationContext(),
@@ -158,6 +167,9 @@ public class MainActivity extends AppCompatActivity {
     /* HERE: RECORDING FUNCTIONS */
 
     public void MediaRecorderReady() {
+        Log.d("MediaRecorder", "MediaRecorderReady");
+        textView.setText("MediaRecorder: MediaRecorderReady\n\n");
+
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -166,6 +178,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String CreateRandomAudioFileName(int string) {
+        Log.d("MediaRecorder", "CreateRandomAudioFileName");
+        textView.setText("MediaRecorder: CreateRandomAudioFileName\n\n");
+
         StringBuilder stringBuilder = new StringBuilder(string);
         int i = 0;
         while (i < string) {
@@ -177,6 +192,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void recordStart() {
+        Log.d("MediaRecorder", "recordStart");
+        textView.setText("MediaRecorder: recordStart\n\n");
+
         if (checkPermission()) {
             AudioSavePathInDevice =
                     Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
@@ -203,12 +221,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void recordStop() {
+        Log.d("MediaRecorder", "recordStop");
+        textView.setText("MediaRecorder: recordStop\n\n");
+
         mediaRecorder.stop();
     }
 
     /* HERE: PLAY AUDIO FUNCTIONS */
 
     public void recordAudioPlay() {
+        Log.d("AudioPlay", "recordAudioPlay");
+        textView.setText("AudioPlay: recordAudioPlay\n\n");
+
         mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setDataSource(AudioSavePathInDevice);
@@ -220,6 +244,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void recordAudioStop() {
+        Log.d("AudioPlay", "recordAudioStop");
+        textView.setText("AudioPlay: recordAudioStop\n\n");
+
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release();
