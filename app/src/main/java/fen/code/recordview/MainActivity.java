@@ -38,15 +38,16 @@ public class MainActivity extends AppCompatActivity {
     RecordButton recordButton;
     RecordView recordView;
 
-    String AudioSavePathInDevice = null;
-    String AudioDecryptPathInDevice = null;
-    MediaRecorder mediaRecorder;
     Random random;
-    String RandomAudioFileName = "ABCDEFGHIJKLMNOP";
-    public static final int RequestPermissionCode = 1;
+    MediaRecorder mediaRecorder;
     MediaPlayer mediaPlayer;
 
-    String base64String = "";
+    public static final int RequestPermissionCode = 1;
+
+    String audioBase64 = "";
+    String audioPathRecorded = "";
+    String audioPathDecrypted = "";
+    String RandomAudioFileName = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -78,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
                 setLog("setOnRecordListener", "onCancel");
 
                 recordStop();
-                convertAudioAndPlay();
             }
 
             @Override
@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
                 setLog("setOnRecordListener", "onLessThanSecond");
 
                 recordStop();
-                convertAudioAndPlay();
             }
         });
 
@@ -147,8 +146,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         setLog("requestPermission", "onRequestPermissionsResult");
 
         switch (requestCode) {
@@ -189,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-        mediaRecorder.setOutputFile(AudioSavePathInDevice);
+        mediaRecorder.setOutputFile(audioPathRecorded);
     }
 
     public String CreateRandomAudioFileName(int string) {
@@ -209,12 +207,14 @@ public class MainActivity extends AppCompatActivity {
         setLog("MediaRecorder", "recordStart");
 
         if (checkPermission()) {
-            AudioSavePathInDevice =
-                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
-                            CreateRandomAudioFileName(5) + "AudioRecording.3gp";
-            AudioDecryptPathInDevice =
-                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
-                            CreateRandomAudioFileName(5) + "AudioDecrypt.3gp";
+            audioPathRecorded =
+                    Environment.getExternalStorageDirectory().getAbsolutePath() +
+                            "/Android/data/audio/recorded" +
+                            CreateRandomAudioFileName(5) + "recorded.3gp";
+            audioPathDecrypted =
+                    Environment.getExternalStorageDirectory().getAbsolutePath() +
+                            "/Android/data/audio/decrypted" +
+                            CreateRandomAudioFileName(5) + "decrypted.3gp";
 
             MediaRecorderReady();
 
@@ -294,23 +294,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (byteFileArray.length > 0) {
-            base64String = android.util.Base64.encodeToString(byteFileArray, android.util.Base64.NO_WRAP);
-            setLog("convertAudioEncode", "File Base64: " + base64String);
+            audioBase64 = android.util.Base64.encodeToString(byteFileArray, android.util.Base64.NO_WRAP);
+            setLog("convertAudioEncode", "File Base64: " + audioBase64);
         }
         setLog("convertAudioEncode", "FINISHED");
 
-        convertAudioDecode(AudioDecryptPathInDevice);
+        convertAudioDecode(audioPathDecrypted);
     }
 
     public void convertAudioDecode(String output) {
         setLog("convertAudioDecode", "File output: " + output);
         try {
             FileOutputStream out = new FileOutputStream(output);
-            byte[] decoded = Base64.decode(base64String, 0);
+            byte[] decoded = Base64.decode(audioBase64, 0);
             out.write(decoded);
             out.close();
 
-            recordAudioPlay(AudioDecryptPathInDevice);
+            recordAudioPlay(audioPathDecrypted);
         } catch (FileNotFoundException e) {
             setLog("convertAudioDecode", "File Not Found");
             e.printStackTrace();
@@ -323,6 +323,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void convertAudioAndPlay() {
         setLog("convertAudioAndPlay", "convertAudioAndPlay");
-        convertAudioEncode(AudioSavePathInDevice);
+        convertAudioEncode(audioPathRecorded);
     }
 }
