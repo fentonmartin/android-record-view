@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 // On Start Recording
                 Log.d("RecordView", "onStart");
                 textView.setText("RecordView: onStart\n\n");
+
+                recordStart();
             }
 
             @Override
@@ -67,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
                 // On Swipe To Cancel
                 Log.d("RecordView", "onCancel");
                 textView.setText(textView.getText().toString() + "RecordView: onCancel\n\n");
+
+                recordStop();
+                recordAudioPlay();
             }
 
             @Override
@@ -74,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
                 // On Stop Recording
                 Log.d("RecordView", "onFinish");
                 textView.setText(textView.getText().toString() + "RecordView: onFinish\n\n");
+
+                recordStop();
+                recordAudioPlay();
             }
 
             @Override
@@ -81,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
                 // When the record time is less than One Second
                 Log.d("RecordView", "onLessThanSecond");
                 textView.setText(textView.getText().toString() + "RecordView: onLessThanSecond\n\n");
+
+                recordStop();
+                recordAudioPlay();
             }
         });
 
@@ -122,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     private void requestPermission() {
         Log.d("requestPermission", "requestPermission");
         textView.setText("requestPermission: requestPermission\n\n");
-        
+
         ActivityCompat.requestPermissions(MainActivity.this, new
                 String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
     }
