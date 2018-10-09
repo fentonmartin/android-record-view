@@ -222,10 +222,8 @@ public class MainActivity extends AppCompatActivity {
                 mediaRecorder.prepare();
                 mediaRecorder.start();
             } catch (IllegalStateException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
@@ -238,7 +236,8 @@ public class MainActivity extends AppCompatActivity {
     public void recordStop() {
         setLog("MediaRecorder", "recordStop");
 
-        mediaRecorder.stop();
+        if (mediaRecorder != null)
+            mediaRecorder.stop();
     }
 
     /* HERE: PLAY AUDIO FUNCTIONS */
