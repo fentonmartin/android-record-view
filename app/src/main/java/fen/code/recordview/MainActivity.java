@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +20,12 @@ import com.devlomi.record_view.OnRecordListener;
 import com.devlomi.record_view.RecordButton;
 import com.devlomi.record_view.RecordView;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
 
@@ -32,11 +39,14 @@ public class MainActivity extends AppCompatActivity {
     RecordView recordView;
 
     String AudioSavePathInDevice = null;
+    String AudioDecryptPathInDevice = null;
     MediaRecorder mediaRecorder;
     Random random;
     String RandomAudioFileName = "ABCDEFGHIJKLMNOP";
     public static final int RequestPermissionCode = 1;
     MediaPlayer mediaPlayer;
+
+    String base64String = "";
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -202,6 +212,9 @@ public class MainActivity extends AppCompatActivity {
             AudioSavePathInDevice =
                     Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
                             CreateRandomAudioFileName(5) + "AudioRecording.3gp";
+            AudioDecryptPathInDevice =
+                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
+                            CreateRandomAudioFileName(5) + "AudioDecrypt.3gp";
 
             MediaRecorderReady();
 
@@ -233,14 +246,15 @@ public class MainActivity extends AppCompatActivity {
     public void recordAudioPlay() {
         setLog("AudioPlay", "recordAudioPlay");
 
-        mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(AudioSavePathInDevice);
-            mediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mediaPlayer.start();
+//        mediaPlayer = new MediaPlayer();
+//        try {
+//            mediaPlayer.setDataSource(AudioSavePathInDevice);
+//            mediaPlayer.prepare();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        mediaPlayer.start();
+        convertAudioStart();
     }
 
     public void recordAudioStop() {
@@ -256,12 +270,60 @@ public class MainActivity extends AppCompatActivity {
     /* HERE: CONVERT AUDIO FUNCTIONS */
 
     public void convertAudioStart() {
+        File file = new File(AudioSavePathInDevice);
+        byte[] b = new byte[(int) file.length()];
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            fileInputStream.read(b);
+            for (int j = 0; j < b.length; j++) {
+                System.out.print((char) b[j]);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found.");
+            e.printStackTrace();
+        } catch (IOException e1) {
+            System.out.println("Error Reading The File.");
+            e1.printStackTrace();
+        }
+
+        byte[] byteFileArray = new byte[0];
+        try {
+            byteFileArray = FileUtils.readFileToByteArray(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (byteFileArray.length > 0) {
+            base64String = android.util.Base64.encodeToString(byteFileArray, android.util.Base64.NO_WRAP);
+            setLog("File Base64 string", "IMAGE PARSE ==>" + base64String);
+        }
+
+        convertAudioStop();
 
         setLog("convertAudioStart", "encode");
     }
 
     public void convertAudioStop() {
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(AudioDecryptPathInDevice);
+            byte[] decoded = Base64.decode(base64String, 0);
 
+            out.write(decoded);
+            out.close();
+            mediaPlayer = new MediaPlayer();
+            try {
+                mediaPlayer.setDataSource(AudioDecryptPathInDevice);
+                mediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mediaPlayer.start();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         setLog("convertAudioStart", "decode");
     }
 }
