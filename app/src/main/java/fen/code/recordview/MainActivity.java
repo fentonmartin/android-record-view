@@ -252,4 +252,16 @@ public class MainActivity extends AppCompatActivity {
             MediaRecorderReady();
         }
     }
+
+    /* HERE: CONVERT AUDIO FUNCTIONS */
+
+    public void convertAudioStart() {
+
+        setLog("convertAudioStart", "encode");
+    }
+
+    public void convertAudioStop() {
+
+        setLog("convertAudioStart", "decode");
+    }
 }
