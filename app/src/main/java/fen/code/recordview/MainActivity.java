@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.devlomi.record_view.OnRecordListener;
 import com.devlomi.record_view.RecordButton;
@@ -58,8 +57,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStart() {
                 // On Start Recording
-                Log.d("RecordView", "onStart");
-                textView.setText("RecordView: onStart\n\n");
+                setLog("setOnRecordListener", "onStart");
 
                 recordStart();
             }
@@ -67,8 +65,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCancel() {
                 // On Swipe To Cancel
-                Log.d("RecordView", "onCancel");
-                textView.setText(textView.getText().toString() + "RecordView: onCancel\n\n");
+                setLog("setOnRecordListener", "onCancel");
 
                 recordStop();
                 recordAudioPlay();
@@ -77,8 +74,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFinish(long recordTime) {
                 // On Stop Recording
-                Log.d("RecordView", "onFinish");
-                textView.setText(textView.getText().toString() + "RecordView: onFinish\n\n");
+                setLog("setOnRecordListener", "onFinish");
 
                 recordStop();
                 recordAudioPlay();
@@ -87,8 +83,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLessThanSecond() {
                 // When the record time is less than One Second
-                Log.d("RecordView", "onLessThanSecond");
-                textView.setText(textView.getText().toString() + "RecordView: onLessThanSecond\n\n");
+                setLog("setOnRecordListener", "onLessThanSecond");
 
                 recordStop();
                 recordAudioPlay();
@@ -124,15 +119,18 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void setToast(String text) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    /* HERE: LOG FUNCTIONS */
+
+    @SuppressLint("SetTextI18n")
+    private void setLog(String function, String text) {
+        Log.d("RecordView " + function, text);
+        textView.setText("\n\n" + textView.getText().toString() + text);
     }
 
     /* HERE: REQUEST PERMISSIONS */
 
     private void requestPermission() {
-        Log.d("requestPermission", "requestPermission");
-        textView.setText("requestPermission: requestPermission\n\n");
+        setLog("requestPermission", "requestPermission");
 
         ActivityCompat.requestPermissions(MainActivity.this, new
                 String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
@@ -141,8 +139,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-        Log.d("requestPermission", "onRequestPermissionsResult");
-        textView.setText("requestPermission: onRequestPermissionsResult\n\n");
+        setLog("requestPermission", "onRequestPermissionsResult");
 
         switch (requestCode) {
             case RequestPermissionCode:
@@ -153,10 +150,9 @@ public class MainActivity extends AppCompatActivity {
                             PackageManager.PERMISSION_GRANTED;
 
                     if (StoragePermission && RecordPermission) {
-                        Toast.makeText(MainActivity.this, "Permission Granted",
-                                Toast.LENGTH_LONG).show();
+                        setLog("requestPermission", "Granted");
                     } else {
-                        Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_LONG).show();
+                        setLog("requestPermission", "Denied");
                     }
                 }
                 break;
@@ -164,8 +160,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean checkPermission() {
-        Log.d("requestPermission", "checkPermission");
-        textView.setText("requestPermission: checkPermission\n\n");
+        setLog("requestPermission", "checkPermission");
 
         int result = ContextCompat.checkSelfPermission(getApplicationContext(),
                 WRITE_EXTERNAL_STORAGE);
@@ -178,8 +173,7 @@ public class MainActivity extends AppCompatActivity {
     /* HERE: RECORDING FUNCTIONS */
 
     public void MediaRecorderReady() {
-        Log.d("MediaRecorder", "MediaRecorderReady");
-        textView.setText("MediaRecorder: MediaRecorderReady\n\n");
+        setLog("MediaRecorder", "MediaRecorderReady");
 
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -189,8 +183,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String CreateRandomAudioFileName(int string) {
-        Log.d("MediaRecorder", "CreateRandomAudioFileName");
-        textView.setText("MediaRecorder: CreateRandomAudioFileName\n\n");
+        setLog("MediaRecorder", "CreateRandomAudioFileName");
 
         StringBuilder stringBuilder = new StringBuilder(string);
         int i = 0;
@@ -203,8 +196,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void recordStart() {
-        Log.d("MediaRecorder", "recordStart");
-        textView.setText("MediaRecorder: recordStart\n\n");
+        setLog("MediaRecorder", "recordStart");
 
         if (checkPermission()) {
             AudioSavePathInDevice =
@@ -224,16 +216,14 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            Toast.makeText(MainActivity.this, "Recording started",
-                    Toast.LENGTH_LONG).show();
+            setLog("MediaRecorder", "Started");
         } else {
             requestPermission();
         }
     }
 
     public void recordStop() {
-        Log.d("MediaRecorder", "recordStop");
-        textView.setText("MediaRecorder: recordStop\n\n");
+        setLog("MediaRecorder", "recordStop");
 
         mediaRecorder.stop();
     }
@@ -241,8 +231,7 @@ public class MainActivity extends AppCompatActivity {
     /* HERE: PLAY AUDIO FUNCTIONS */
 
     public void recordAudioPlay() {
-        Log.d("AudioPlay", "recordAudioPlay");
-        textView.setText("AudioPlay: recordAudioPlay\n\n");
+        setLog("AudioPlay", "recordAudioPlay");
 
         mediaPlayer = new MediaPlayer();
         try {
@@ -255,8 +244,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void recordAudioStop() {
-        Log.d("AudioPlay", "recordAudioStop");
-        textView.setText("AudioPlay: recordAudioStop\n\n");
+        setLog("AudioPlay", "recordAudioStop");
 
         if (mediaPlayer != null) {
             mediaPlayer.stop();
