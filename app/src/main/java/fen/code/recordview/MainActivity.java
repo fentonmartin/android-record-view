@@ -3,7 +3,10 @@ package fen.code.recordview;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +20,9 @@ import com.devlomi.record_view.OnRecordListener;
 import com.devlomi.record_view.RecordButton;
 import com.devlomi.record_view.RecordView;
 
+import java.io.IOException;
+import java.util.Random;
+
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static fen.code.recordview.RecordActivity.RequestPermissionCode;
@@ -26,6 +32,13 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     RecordButton recordButton;
     RecordView recordView;
+
+    String AudioSavePathInDevice = null;
+    MediaRecorder mediaRecorder;
+    Random random;
+    String RandomAudioFileName = "ABCDEFGHIJKLMNOP";
+    public static final int RequestPermissionCode = 1;
+    MediaPlayer mediaPlayer;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -72,7 +85,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        /* PERMISSIONS */
         requestPermission();
+
+        /* RECORDER */
+        random = new Random();
     }
 
     @Override
@@ -137,4 +155,55 @@ public class MainActivity extends AppCompatActivity {
         return result == PackageManager.PERMISSION_GRANTED &&
                 result1 == PackageManager.PERMISSION_GRANTED;
     }
+
+    /* HERE: RECORDING FUNCTIONS */
+
+    public void MediaRecorderReady(){
+        mediaRecorder=new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        mediaRecorder.setOutputFile(AudioSavePathInDevice);
+    }
+
+    public String CreateRandomAudioFileName(int string){
+        StringBuilder stringBuilder = new StringBuilder( string );
+        int i = 0 ;
+        while(i < string ) {
+            stringBuilder.append(RandomAudioFileName.
+                    charAt(random.nextInt(RandomAudioFileName.length())));
+            i++ ;
+        }
+        return stringBuilder.toString();
+    }
+
+    public void recordStart() {
+        if(checkPermission()) {
+            AudioSavePathInDevice =
+                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
+                            CreateRandomAudioFileName(5) + "AudioRecording.3gp";
+
+            MediaRecorderReady();
+
+            try {
+                mediaRecorder.prepare();
+                mediaRecorder.start();
+            } catch (IllegalStateException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            Toast.makeText(MainActivity.this, "Recording started",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            requestPermission();
+        }
+    }
+    public void recordStop() {
+        mediaRecorder.stop();
+    }
+
 }
