@@ -25,7 +25,6 @@ import java.util.Random;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static fen.code.recordview.RecordActivity.RequestPermissionCode;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -158,27 +157,27 @@ public class MainActivity extends AppCompatActivity {
 
     /* HERE: RECORDING FUNCTIONS */
 
-    public void MediaRecorderReady(){
-        mediaRecorder=new MediaRecorder();
+    public void MediaRecorderReady() {
+        mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         mediaRecorder.setOutputFile(AudioSavePathInDevice);
     }
 
-    public String CreateRandomAudioFileName(int string){
-        StringBuilder stringBuilder = new StringBuilder( string );
-        int i = 0 ;
-        while(i < string ) {
+    public String CreateRandomAudioFileName(int string) {
+        StringBuilder stringBuilder = new StringBuilder(string);
+        int i = 0;
+        while (i < string) {
             stringBuilder.append(RandomAudioFileName.
                     charAt(random.nextInt(RandomAudioFileName.length())));
-            i++ ;
+            i++;
         }
         return stringBuilder.toString();
     }
 
     public void recordStart() {
-        if(checkPermission()) {
+        if (checkPermission()) {
             AudioSavePathInDevice =
                     Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
                             CreateRandomAudioFileName(5) + "AudioRecording.3gp";
@@ -202,8 +201,29 @@ public class MainActivity extends AppCompatActivity {
             requestPermission();
         }
     }
+
     public void recordStop() {
         mediaRecorder.stop();
     }
 
+    /* HERE: PLAY AUDIO FUNCTIONS */
+
+    public void recordAudioPlay() {
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(AudioSavePathInDevice);
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mediaPlayer.start();
+    }
+
+    public void recordAudioStop() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            MediaRecorderReady();
+        }
+    }
 }
