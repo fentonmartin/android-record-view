@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 setLog("setOnRecordListener", "onCancel");
 
                 recordStop();
-                recordAudioPlay();
+                convertAudioAndPlay();
             }
 
             @Override
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 setLog("setOnRecordListener", "onFinish");
 
                 recordStop();
-                recordAudioPlay();
+                convertAudioAndPlay();
             }
 
             @Override
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 setLog("setOnRecordListener", "onLessThanSecond");
 
                 recordStop();
-                recordAudioPlay();
+                convertAudioAndPlay();
             }
         });
 
@@ -243,18 +243,17 @@ public class MainActivity extends AppCompatActivity {
 
     /* HERE: PLAY AUDIO FUNCTIONS */
 
-    public void recordAudioPlay() {
+    public void recordAudioPlay(String path) {
         setLog("AudioPlay", "recordAudioPlay");
 
-//        mediaPlayer = new MediaPlayer();
-//        try {
-//            mediaPlayer.setDataSource(AudioSavePathInDevice);
-//            mediaPlayer.prepare();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        mediaPlayer.start();
-        convertAudioStart();
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(path);
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mediaPlayer.start();
     }
 
     public void recordAudioStop() {
@@ -269,20 +268,21 @@ public class MainActivity extends AppCompatActivity {
 
     /* HERE: CONVERT AUDIO FUNCTIONS */
 
-    public void convertAudioStart() {
-        File file = new File(AudioSavePathInDevice);
+    public void convertAudioEncode(String path) {
+        setLog("convertAudioEncode", path);
+        File file = new File(path);
         byte[] b = new byte[(int) file.length()];
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             fileInputStream.read(b);
-            for (int j = 0; j < b.length; j++) {
-                System.out.print((char) b[j]);
+            for (byte aB : b) {
+                System.out.print((char) aB);
             }
         } catch (FileNotFoundException e) {
-            System.out.println("File Not Found.");
+            setLog("convertAudioEncode", "File Not Found");
             e.printStackTrace();
         } catch (IOException e1) {
-            System.out.println("Error Reading The File.");
+            setLog("convertAudioEncode", "Error Reading The File");
             e1.printStackTrace();
         }
 
@@ -295,35 +295,35 @@ public class MainActivity extends AppCompatActivity {
 
         if (byteFileArray.length > 0) {
             base64String = android.util.Base64.encodeToString(byteFileArray, android.util.Base64.NO_WRAP);
-            setLog("File Base64 string", "IMAGE PARSE ==>" + base64String);
+            setLog("convertAudioEncode", "File Base64: " + base64String);
         }
 
-        convertAudioStop();
+        convertAudioDecode(AudioDecryptPathInDevice);
 
-        setLog("convertAudioStart", "encode");
+        setLog("convertAudioEncode", "FINISHED");
+        setLog("convertAudioEncode", "FINISHED");
     }
 
-    public void convertAudioStop() {
-        FileOutputStream out = null;
+    public void convertAudioDecode(String output) {
+        setLog("convertAudioDecode", output);
         try {
-            out = new FileOutputStream(AudioDecryptPathInDevice);
+            FileOutputStream out = new FileOutputStream(output);
             byte[] decoded = Base64.decode(base64String, 0);
-
             out.write(decoded);
             out.close();
-            mediaPlayer = new MediaPlayer();
-            try {
-                mediaPlayer.setDataSource(AudioDecryptPathInDevice);
-                mediaPlayer.prepare();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mediaPlayer.start();
+
+            recordAudioPlay(AudioDecryptPathInDevice);
         } catch (FileNotFoundException e) {
+            setLog("convertAudioDecode", "File Not Found");
             e.printStackTrace();
         } catch (IOException e) {
+            setLog("convertAudioDecode", "Error Reading The File");
             e.printStackTrace();
         }
-        setLog("convertAudioStart", "decode");
+        setLog("convertAudioDecode", "FINISHED");
+    }
+
+    public void convertAudioAndPlay() {
+        convertAudioEncode(AudioSavePathInDevice);
     }
 }
