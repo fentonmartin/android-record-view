@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
     /* HERE: CONVERT AUDIO FUNCTIONS */
 
     public void convertAudioEncode(String path) {
-        setLog("convertAudioEncode", path);
+        setLog("convertAudioEncode", "File path: " + path);
         File file = new File(path);
         byte[] b = new byte[(int) file.length()];
         try {
@@ -297,15 +297,13 @@ public class MainActivity extends AppCompatActivity {
             base64String = android.util.Base64.encodeToString(byteFileArray, android.util.Base64.NO_WRAP);
             setLog("convertAudioEncode", "File Base64: " + base64String);
         }
+        setLog("convertAudioEncode", "FINISHED");
 
         convertAudioDecode(AudioDecryptPathInDevice);
-
-        setLog("convertAudioEncode", "FINISHED");
-        setLog("convertAudioEncode", "FINISHED");
     }
 
     public void convertAudioDecode(String output) {
-        setLog("convertAudioDecode", output);
+        setLog("convertAudioDecode", "File output: " + output);
         try {
             FileOutputStream out = new FileOutputStream(output);
             byte[] decoded = Base64.decode(base64String, 0);
@@ -324,6 +322,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void convertAudioAndPlay() {
+        setLog("convertAudioAndPlay", "convertAudioAndPlay");
         convertAudioEncode(AudioSavePathInDevice);
     }
 }
