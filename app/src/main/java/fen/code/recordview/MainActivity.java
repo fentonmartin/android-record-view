@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void setLog(String function, String text) {
         Log.d("RecordView " + function, text);
-        textView.setText("\n\n" + textView.getText().toString() + text);
+        textView.setText(textView.getText().toString() + "\n\n" + function + ": " + text);
     }
 
     /* HERE: REQUEST PERMISSIONS */
