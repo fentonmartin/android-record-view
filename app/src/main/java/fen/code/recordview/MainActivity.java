@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 // On Start Recording
                 setLog("setOnRecordListener", "onStart");
 
+                fileDelete(audioPathDecrypted);
                 recordStart();
             }
 
@@ -250,6 +251,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         mediaPlayer.start();
+
+        fileDelete(path);
     }
 
     public void recordAudioStop() {
@@ -296,6 +299,7 @@ public class MainActivity extends AppCompatActivity {
         setLog("convertAudioEncode", "FINISHED");
 
         convertAudioDecode(audioPathDecrypted);
+        fileDelete(audioPathRecorded);
     }
 
     public void convertAudioDecode(String output) {
@@ -320,5 +324,15 @@ public class MainActivity extends AppCompatActivity {
     public void convertAudioAndPlay() {
         setLog("convertAudioAndPlay", "convertAudioAndPlay");
         convertAudioEncode(audioPathRecorded);
+    }
+
+    /* HERE: FILE FUNCTIONS */
+
+    public void fileDelete(String path) {
+        setLog("fileDelete", "File path: " + path);
+        File file = new File(path);
+        if (file.exists()) {
+            boolean delete = file.delete();
+        }
     }
 }
