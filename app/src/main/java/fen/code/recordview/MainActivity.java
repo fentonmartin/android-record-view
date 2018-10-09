@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     String audioBase64 = "";
     String audioPathRecorded = "";
     String audioPathDecrypted = "";
-    String RandomAudioFileName = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    String RandomAudioFileName = "abcdef1234567890";
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -208,16 +208,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (checkPermission()) {
             audioPathRecorded =
-                    Environment.getExternalStorageDirectory().getAbsolutePath() +
-                            "/Android/data/audio/recorded" +
+                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
                             CreateRandomAudioFileName(5) + "recorded.3gp";
             audioPathDecrypted =
-                    Environment.getExternalStorageDirectory().getAbsolutePath() +
-                            "/Android/data/audio/decrypted" +
+                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
                             CreateRandomAudioFileName(5) + "decrypted.3gp";
 
             MediaRecorderReady();
-
             try {
                 mediaRecorder.prepare();
                 mediaRecorder.start();
@@ -237,13 +234,13 @@ public class MainActivity extends AppCompatActivity {
         setLog("MediaRecorder", "recordStop");
 
         if (mediaRecorder != null)
-            mediaRecorder.stop();
+            mediaRecorder.reset();
     }
 
     /* HERE: PLAY AUDIO FUNCTIONS */
 
     public void recordAudioPlay(String path) {
-        setLog("AudioPlay", "recordAudioPlay");
+        setLog("audioPlay", "recordAudioPlay");
 
         mediaPlayer = new MediaPlayer();
         try {
@@ -256,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void recordAudioStop() {
-        setLog("AudioPlay", "recordAudioStop");
+        setLog("audioPlay", "recordAudioStop");
 
         if (mediaPlayer != null) {
             mediaPlayer.stop();
